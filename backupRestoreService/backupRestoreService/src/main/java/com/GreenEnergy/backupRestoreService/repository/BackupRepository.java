@@ -7,5 +7,8 @@ import com.GreenEnergy.backupRestoreService.model.Backup;
 
 @Repository
 public interface BackupRepository extends JpaRepository<Backup, Integer> {
+    
+Backup findByFilename(String filename);
+
 
 }
