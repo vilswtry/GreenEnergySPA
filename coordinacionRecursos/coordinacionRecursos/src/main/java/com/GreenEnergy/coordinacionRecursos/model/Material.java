@@ -1,6 +1,4 @@
-package com.GreenEnergy.backupRestoreService.model;
-
-import java.time.LocalDateTime;
+package com.GreenEnergy.coordinacionRecursos.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,29 +11,25 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "monitoreos")
+@Table(name = "Inventario")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class EstadoSistema {
+public class Material {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(nullable = false)
-    private Double cpuUsada;
+    @Column(nullable = false, unique = true)
+    private String codigoMaterial;
+
+    @Column(nullable = false, unique = true)
+    private String nombreMaterial;
 
     @Column(nullable = false)
-    private Long memoriaLibre;
+    private String unidadMedida;
 
-    @Column(nullable = false)
-    private Long memoriaUsada;
+    private int stock;
 
-    @Column(nullable = false)
-    private String estadoSistema;
-
-    @Column(nullable = false)
-    private LocalDateTime fecha;
-    
 }
