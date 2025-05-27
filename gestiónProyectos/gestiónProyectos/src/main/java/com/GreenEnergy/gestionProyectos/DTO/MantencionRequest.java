@@ -1,4 +1,4 @@
-package com.GreenEnergy.coordinacionRecursos.DTO;
+package com.GreenEnergy.gestionProyectos.DTO;
 
 import java.time.LocalDate;
 
@@ -10,8 +10,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MantencionRequest {
-    
+
+
     private Long mantencionId;
+    private String nombre;
     private LocalDate fechaMantencion;
     private int cantidadPaneles;
 }

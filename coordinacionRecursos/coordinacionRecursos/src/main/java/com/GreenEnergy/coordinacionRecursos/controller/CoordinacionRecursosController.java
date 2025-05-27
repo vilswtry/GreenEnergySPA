@@ -28,10 +28,19 @@ public class CoordinacionRecursosController {
     @PostMapping("/asignar")
     public ResponseEntity<?> asignarRecursos(@RequestBody ProjectRequest request) {
         try {
+            if (request.getFechaInicio() == null || request.getFechaFin() == null) {
+                return ResponseEntity.badRequest().body("Las fechas de inicio y fin del proyecto son requeridas.");
+            }
+            if (request.getFechaInicio().isAfter(request.getFechaFin())) {
+                return ResponseEntity.badRequest().body("La fecha de inicio no puede ser posterior a la fecha de fin.");
+            }
+
             coordinacionService.asignarRecursosProyecto(request);
             return ResponseEntity.ok("Recursos asignados correctamente al proyecto.");
         } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Error en la asignación. " + e.getMessage());
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body("Error en la asignación. " + e.getMessage());
         }
     }
 
@@ -42,6 +51,28 @@ public class CoordinacionRecursosController {
             return ResponseEntity.ok("Recursos de mantención asignados correctamente.");
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Error en la asignación: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/devolver/{proyectoId}")
+    public ResponseEntity<?> devolverMaterialesProyecto(@PathVariable Long proyectoId) {
+        try {
+            coordinacionService.devolverMaterialesProyecto(proyectoId);
+            return ResponseEntity.ok("Materiales devueltos correctamente para proyecto ID: " + proyectoId);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Error al devolver materiales del proyecto: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/devolver-mantencion/{mantencionId}")
+    public ResponseEntity<?> devolverMaterialesMantencion(@PathVariable Long mantencionId) {
+        try {
+            coordinacionService.devolverMaterialesMantencion(mantencionId);
+            return ResponseEntity.ok("Materiales devueltos correctamente para mantención ID: " + mantencionId);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Error al devolver materiales de la mantención: " + e.getMessage());
         }
     }
 
@@ -61,9 +92,9 @@ public class CoordinacionRecursosController {
     }
 
     @PostMapping("/materiales/reponer")
-    public ResponseEntity<?> reponerMaterial(@RequestBody ReposicionRequest request ) {
+    public ResponseEntity<?> reponerMaterial(@RequestBody ReposicionRequest request) {
         try {
-            Material material = coordinacionService.reponerMaterial(request.getCodigoMaterial(), request.getCant());
+            Material material = coordinacionService.reponerMaterial(request.getCodigoMaterial(), request.getCantidad());
             return ResponseEntity.ok("Material repuesto correctamente. Nuevo stock: " + material.getStock());
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body("Error al reponer material: " + e.getMessage());

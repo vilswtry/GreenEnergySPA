@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ReposicionRequest {
 private String codigoMaterial;
-private int cant;
+private int cantidad;
 }

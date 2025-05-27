@@ -14,7 +14,11 @@ import org.springframework.web.server.ResponseStatusException;
 import com.GreenEnergy.coordinacionRecursos.DTO.MantencionRequest;
 import com.GreenEnergy.coordinacionRecursos.DTO.ProjectRequest;
 import com.GreenEnergy.coordinacionRecursos.model.Material;
+import com.GreenEnergy.coordinacionRecursos.model.MaterialAsignadoMantencion;
+import com.GreenEnergy.coordinacionRecursos.model.MaterialAsignadoProyecto;
 import com.GreenEnergy.coordinacionRecursos.model.Tecnico;
+import com.GreenEnergy.coordinacionRecursos.repository.MaterialAsignadoMantencionRepository;
+import com.GreenEnergy.coordinacionRecursos.repository.MaterialAsignadoProyectoRepository;
 import com.GreenEnergy.coordinacionRecursos.repository.MaterialRepository;
 import com.GreenEnergy.coordinacionRecursos.repository.TecnicoRepository;
 
@@ -28,9 +32,17 @@ public class CoordinacionRecursosService {
     @Autowired
     private TecnicoRepository tecnicoRepository;
 
+    @Autowired
+    private MaterialAsignadoProyectoRepository maProyectoRepository;
+
+    @Autowired
+    private MaterialAsignadoMantencionRepository maMantencionRepository;
+
     public void asignarRecursosProyecto(ProjectRequest request) {
+        Long proyectoId = request.getProyectoId();
         int cantPaneles = request.getCantidadPaneles();
-        LocalDate fecha = request.getFechaProyecto();
+        LocalDate fechaIni = request.getFechaInicio();
+        LocalDate fechaFin = request.getFechaFin();
 
         Map<String, Integer> materialesRequeridos = calcularMateriales(cantPaneles);
 
@@ -42,9 +54,16 @@ public class CoordinacionRecursosService {
             }
             material.setStock(material.getStock() - materialReq.getValue());
             materialRepository.save(material);
+
+            MaterialAsignadoProyecto asignacion = new MaterialAsignadoProyecto();
+            asignacion.setProyectoId(proyectoId);
+            asignacion.setCodigoMaterial(material.getCodigoMaterial());
+            asignacion.setCantAsignado(materialReq.getValue());
+
+            maProyectoRepository.save(asignacion);
         }
 
-        asignarTecnicos(fecha);
+        asignarTecnicos(fechaIni, fechaFin);
     }
 
     private Map<String, Integer> calcularMateriales(int cantPaneles) {
@@ -68,35 +87,70 @@ public class CoordinacionRecursosService {
         materiales.put("ETQ", 1);
         materiales.put("EPP", 2);
         materiales.put("MULT", 1);
-        materiales.put("CEP", 1);
-        materiales.put("PAN", 1);
-        materiales.put("AGP", 1);
         materiales.put("TST", 1);
         return materiales;
     }
 
-    private void asignarTecnicos(LocalDate fecha) {
-        List<String> especialidades = List.of("electricista", "instalador fotovoltaico", "instalador de estructura",
-                "ayudante tecnico");
+    private Map<String, Integer> calcularMaterialesMantencion(int cantPaneles) {
+        Map<String, Integer> materiales = new HashMap<>();
+        materiales.put("CEP", 1);
+        materiales.put("PAN", 1);
+        materiales.put("AGP", 1);
+        materiales.put("ETQ", 1);
+        materiales.put("EPP", 2);
+        materiales.put("MULT", 1);
+        materiales.put("TST", 1);
+
+        return materiales;
+    }
+
+    private void asignarTecnicos(LocalDate fechaInicio, LocalDate fechaFin) {
+        List<String> especialidades = List.of("electricista", "instalador fotovoltaico",
+                "instalador de estructura", "ayudante tecnico");
+
+        List<LocalDate> fechas = fechaInicio.datesUntil(fechaFin.plusDays(1)).toList();
 
         for (String especialidad : especialidades) {
-            List<Tecnico> disponibles = tecnicoRepository.findByEspecialidadAndFechaDisponible(especialidad, fecha);
-            if (disponibles.isEmpty()) {
-                throw new RuntimeException("No hay suficientes técnicos disponibles.");
+            for (LocalDate fecha : fechas) {
+                List<Tecnico> disponibles = tecnicoRepository.findByEspecialidadAndFechaDisponible(especialidad, fecha);
+                if (disponibles.isEmpty()) {
+                    throw new RuntimeException("No hay suficientes técnicos disponibles de la especialidad "
+                            + especialidad + " para la fecha " + fecha);
+                }
+                Tecnico seleccionado = disponibles.get(0);
+                seleccionado.getFechasOcupadas().add(fecha);
+                tecnicoRepository.save(seleccionado);
             }
-            Tecnico seleccionado = disponibles.get(0);
-            seleccionado.getFechasOcupadas().add(fecha);
-            tecnicoRepository.save(seleccionado);
         }
     }
 
     public void asignarRecursosMantencion(MantencionRequest request) {
+        Long mantencionId = request.getMantencionId();
         LocalDate fecha = request.getFechaMantencion();
-        int paneles = request.getCantPanelesPorLimpiar();
+        int paneles = request.getCantidadPaneles();
 
-        if (request.getFechaMantencion() == null || request.getCantPanelesPorLimpiar() <= 0) {
+        if (fecha == null || paneles <= 0) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "La fecha de mantención o la cantidad de paneles por limpiar no es válida.");
+        }
+
+        Map<String, Integer> materialesRequeridos = calcularMaterialesMantencion(paneles);
+
+        for (Map.Entry<String, Integer> materialReq : materialesRequeridos.entrySet()) {
+            Material material = materialRepository.findByCodigoMaterial(materialReq.getKey())
+                    .orElseThrow(() -> new RuntimeException("Material no encontrado: " + materialReq.getKey()));
+            if (material.getStock() < materialReq.getValue()) {
+                throw new RuntimeException("Stock insuficiente de: " + material.getNombreMaterial());
+            }
+            material.setStock(material.getStock() - materialReq.getValue());
+            materialRepository.save(material);
+
+            MaterialAsignadoMantencion asignacion = new MaterialAsignadoMantencion();
+            asignacion.setMantencionId(mantencionId);
+            asignacion.setCodigoMaterial(material.getCodigoMaterial());
+            asignacion.setCantAsignado(materialReq.getValue());
+
+            maMantencionRepository.save(asignacion);
         }
 
         List<Tecnico> electricistasDisponibles = tecnicoRepository.findByEspecialidadAndFechaDisponible("electricista",
@@ -120,7 +174,38 @@ public class CoordinacionRecursosService {
             t.getFechasOcupadas().add(fecha);
             tecnicoRepository.save(t);
         }
+    }
 
+    public void devolverMaterialesProyecto(Long proyectoId) {
+        List<MaterialAsignadoProyecto> asignados = maProyectoRepository.findByProyectoId(proyectoId);
+        if (asignados.isEmpty()) {
+            throw new RuntimeException("No se encontraron materiales asignados para el proyecto con ID: " + proyectoId);
+        }
+
+        for (MaterialAsignadoProyecto asignado : asignados) {
+            Material material = materialRepository.findByCodigoMaterial(asignado.getCodigoMaterial())
+                    .orElseThrow(() -> new RuntimeException("Material no encontrado: " + asignado.getCodigoMaterial()));
+
+            material.setStock(material.getStock() + asignado.getCantAsignado());
+            materialRepository.save(material);
+        }
+    }
+
+    public void devolverMaterialesMantencion(Long mantencionId) {
+        List<MaterialAsignadoMantencion> asignados = maMantencionRepository
+                .findByMantencionId(mantencionId);
+        if (asignados.isEmpty()) {
+            throw new RuntimeException(
+                    "No se encontraron materiales asignados para la mantención con ID: " + mantencionId);
+        }
+
+        for (MaterialAsignadoMantencion asignado : asignados) {
+            Material material = materialRepository.findByCodigoMaterial(asignado.getCodigoMaterial())
+                    .orElseThrow(() -> new RuntimeException("Material no encontrado: " + asignado.getCodigoMaterial()));
+
+            material.setStock(material.getStock() + asignado.getCantAsignado());
+            materialRepository.save(material);
+        }
     }
 
     public List<Material> listarMateriales() {

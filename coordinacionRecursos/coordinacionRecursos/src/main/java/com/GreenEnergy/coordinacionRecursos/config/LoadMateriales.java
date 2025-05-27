@@ -22,139 +22,139 @@ public class LoadMateriales {
                 Material panelSolar = new Material();
                 panelSolar.setCodigoMaterial("PS");
                 panelSolar.setNombreMaterial("Panel Solar");
-                panelSolar.setStock(110);
+                panelSolar.setStock(550);
                 panelSolar.setUnidadMedida("unidad");
 
                 Material inversor = new Material();
                 inversor.setCodigoMaterial("INV");
                 inversor.setNombreMaterial("Inversor");
-                inversor.setStock(20);
+                inversor.setStock(100);
                 inversor.setUnidadMedida("unidad");
 
                 Material cableSolar = new Material();
                 cableSolar.setCodigoMaterial("CBDC");
                 cableSolar.setNombreMaterial("Cable Solar");
-                cableSolar.setStock(450);
+                cableSolar.setStock(2250);
                 cableSolar.setUnidadMedida("metro");
 
                 Material rielAluminio = new Material();
                 rielAluminio.setCodigoMaterial("RIA");
                 rielAluminio.setNombreMaterial("Riel de aluminio");
-                rielAluminio.setStock(80);
+                rielAluminio.setStock(400);
                 rielAluminio.setUnidadMedida("unidad");
 
                 Material abrazaderas = new Material();
                 abrazaderas.setCodigoMaterial("ABR");
                 abrazaderas.setNombreMaterial("Abrazadera");
-                abrazaderas.setStock(180);
+                abrazaderas.setStock(900);
                 abrazaderas.setUnidadMedida("unidad");
 
                 Material ganchosTecho = new Material();
                 ganchosTecho.setCodigoMaterial("GCH");
                 ganchosTecho.setNombreMaterial("Gancho para techo");
-                ganchosTecho.setStock(120);
+                ganchosTecho.setStock(600);
                 ganchosTecho.setUnidadMedida("unidad");
 
                 Material tornillos = new Material();
                 tornillos.setCodigoMaterial("TRN");
                 tornillos.setNombreMaterial("Tornillo");
-                tornillos.setStock(450);
+                tornillos.setStock(2250);
                 tornillos.setUnidadMedida("unidad");
 
                 Material pernosTarugos = new Material();
                 pernosTarugos.setCodigoMaterial("PTS");
                 pernosTarugos.setNombreMaterial("Perno con tarugo");
-                pernosTarugos.setStock(450);
+                pernosTarugos.setStock(2250);
                 pernosTarugos.setUnidadMedida("unidad");
 
                 Material kitProteccion = new Material();
                 kitProteccion.setCodigoMaterial("KPE");
                 kitProteccion.setNombreMaterial("Kit de Proteccion Electrica");
-                kitProteccion.setStock(20);
+                kitProteccion.setStock(100);
                 kitProteccion.setUnidadMedida("unidad");
 
                 Material cableAC = new Material();
                 cableAC.setCodigoMaterial("CBAC");
                 cableAC.setNombreMaterial("Cable AC");
-                cableAC.setStock(300);
+                cableAC.setStock(1500);
                 cableAC.setUnidadMedida("metro");
 
                 Material tableroAC = new Material();
                 tableroAC.setCodigoMaterial("TAC");
                 tableroAC.setNombreMaterial("Tablero AC Eléctrico");
-                tableroAC.setStock(20);
+                tableroAC.setStock(100);
                 tableroAC.setUnidadMedida("unidad");
 
                 Material cableTierra = new Material();
                 cableTierra.setCodigoMaterial("CBT");
                 cableTierra.setNombreMaterial("Cable de puesta a tierra");
-                cableTierra.setStock(90);
+                cableTierra.setStock(450);
                 cableTierra.setUnidadMedida("metro");
 
                 Material varillaTierra = new Material();
                 varillaTierra.setCodigoMaterial("VCT");
                 varillaTierra.setNombreMaterial("Varilla de cobre para tierra");
-                varillaTierra.setStock(20);
+                varillaTierra.setStock(100);
                 varillaTierra.setUnidadMedida("unidad");
 
                 Material cajaEstanca = new Material();
                 cajaEstanca.setCodigoMaterial("CAE");
                 cajaEstanca.setNombreMaterial("Caja Estanca");
-                cajaEstanca.setStock(30);
+                cajaEstanca.setStock(150);
                 cajaEstanca.setUnidadMedida("unidad");
 
                 Material conectores = new Material();
                 conectores.setCodigoMaterial("MC4");
                 conectores.setNombreMaterial("Conector MC4");
-                conectores.setStock(120);
+                conectores.setStock(600);
                 conectores.setUnidadMedida("unidad");
 
                 Material canaletas = new Material();
                 canaletas.setCodigoMaterial("CNT");
                 canaletas.setNombreMaterial("Canaleta");
-                canaletas.setStock(150);
+                canaletas.setStock(750);
                 canaletas.setUnidadMedida("metro");
 
                 Material etqSeguridad = new Material();
                 etqSeguridad.setCodigoMaterial("ETQ");
                 etqSeguridad.setNombreMaterial("Etiqueta de Seguridad");
-                etqSeguridad.setStock(20);
+                etqSeguridad.setStock(100);
                 etqSeguridad.setUnidadMedida("unidad");
 
                 Material kitSeguridad = new Material();
                 kitSeguridad.setCodigoMaterial("EPP");
                 kitSeguridad.setNombreMaterial("Kit de seguridad personal (EPP)");
-                kitSeguridad.setStock(20);
+                kitSeguridad.setStock(100);
                 kitSeguridad.setUnidadMedida("unidad");
 
                 Material multimetro = new Material();
                 multimetro.setCodigoMaterial("MULT");
                 multimetro.setNombreMaterial("Multimetros");
-                multimetro.setStock(20);
+                multimetro.setStock(100);
                 multimetro.setUnidadMedida("unidad");
 
                 Material cepillo = new Material();
                 cepillo.setCodigoMaterial("CEP");
                 cepillo.setNombreMaterial("Cepillo no metálico");
-                cepillo.setStock(50);
+                cepillo.setStock(250);
                 cepillo.setUnidadMedida("unidad");
 
                 Material paño = new Material();
                 paño.setCodigoMaterial("PAN");
                 paño.setNombreMaterial("Paño");
-                paño.setStock(50);
+                paño.setStock(250);
                 paño.setUnidadMedida("unidad");
 
                 Material aguaDes = new Material();
                 aguaDes.setCodigoMaterial("AGP");
                 aguaDes.setNombreMaterial("Agua Destilada");
-                aguaDes.setStock(100);
+                aguaDes.setStock(500);
                 aguaDes.setUnidadMedida("litro");
 
                 Material tester = new Material();
                 tester.setCodigoMaterial("TST");
                 tester.setNombreMaterial("Tester Solar");
-                tester.setStock(20);
+                tester.setStock(100);
                 tester.setUnidadMedida("unidad");
 
                 materiales.add(panelSolar);

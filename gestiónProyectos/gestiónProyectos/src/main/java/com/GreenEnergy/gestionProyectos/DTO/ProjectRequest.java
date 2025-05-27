@@ -1,4 +1,4 @@
-package com.GreenEnergy.coordinacionRecursos.DTO;
+package com.GreenEnergy.gestionProyectos.DTO;
 
 import java.time.LocalDate;
 
@@ -10,10 +10,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProjectRequest {
-
+    
     private Long proyectoId;
+    private String nombre;
     private int cantidadPaneles;
     private LocalDate fechaInicio;
     private LocalDate fechaFin;
-
 }
